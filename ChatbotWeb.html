@@ -167,6 +167,9 @@
           chatBody.scrollTop = chatBody.scrollHeight;
         }, 100);
 
+        // Simpan history chat setelah pesan user ditambahkan
+        saveChatHistory();
+
         // Panggil botResponse setelah user mengirim pesan
         botResponse(userInput);
       }
@@ -187,25 +190,32 @@
           chatbot.style.display === "flex" ? "none" : "flex";
 
         if (chatbot.style.display === "flex") {
-          chatBody.innerHTML = `
-    <p><strong>Bot:</strong> Halo, kamu bisa tanya apa aja ke aku tentang BPR Rama Ganda. Silakan klik pilihan di bawah atau tuliskan kata kuncinya ya.</p>
-    <p><strong>Contohnya:</strong> Tabungan, Kredit, Deposito, dll.</p>
-`;
+          loadChatHistory(); // Tampilkan kembali history chat
 
-          chatBody.innerHTML += `
-                    <div class="chatbot-options">
-                        <button onclick="sendQuickReply('Produk dan Layanan')">Produk dan Layanan</button>
-                        <button onclick="sendQuickReply('Suku Bunga')">Suku Bunga</button>
-                        <button onclick="sendQuickReply('Jam Operasional')">Jam Operasional</button>
-                    </div>`;
+          if (!sessionStorage.getItem("chatHistory")) {
+            chatBody.innerHTML = `
+                <p><strong>Bot:</strong> Halo, kamu bisa tanya apa aja ke aku tentang BPR Rama Ganda. Silakan klik pilihan di bawah atau tuliskan kata kuncinya ya.</p>
+                <p><strong>Contohnya:</strong> Tabungan, Kredit, Deposito, dll.</p>
+            `;
+
+            chatBody.innerHTML += `
+                <div class="chatbot-options">
+                    <button onclick="sendQuickReply('Produk dan Layanan')">Produk dan Layanan</button>
+                    <button onclick="sendQuickReply('Suku Bunga')">Suku Bunga</button>
+                    <button onclick="sendQuickReply('Jam Operasional')">Jam Operasional</button>
+                </div>`;
+          }
         }
       }
 
       function sendQuickReply(message) {
         let chatBody = document.getElementById("chatBody");
         chatBody.innerHTML += `<p><strong style="color: red;">Anda:</strong> ${message}</p>`;
+
+        // Simpan history chat setelah pesan user ditambahkan
+        saveChatHistory();
+
         chatBody.scrollTop = chatBody.scrollHeight;
-        scrollToBottom();
         botResponse(message);
       }
 
@@ -221,6 +231,7 @@
                 <button onclick="sendQuickReply('Kredit')">Kredit</button>
             </div>`;
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -236,6 +247,7 @@
                 <button onclick="sendQuickReply('Tabungan THR')">Tabungan THR</button>
             </div>`;
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -285,6 +297,7 @@
             </a>
         </p>`;
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -315,6 +328,7 @@
             </a>
         </p>`;
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -380,6 +394,7 @@
     </p>`;
 
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -435,6 +450,7 @@
     </p>`;
 
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -489,6 +505,7 @@
     </p>`;
 
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -542,6 +559,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
+          saveChatHistory();
           return;
         }
 
@@ -587,6 +605,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
+          saveChatHistory();
           return;
         }
 
@@ -599,6 +618,7 @@
                 <button onclick="sendQuickReply('Kredit Kelompok')">Kredit Kelompok</button>
             </div>`;
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -658,6 +678,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
+          saveChatHistory();
           return;
         }
 
@@ -717,7 +738,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -760,7 +781,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -772,6 +793,7 @@
                 <button onclick="sendQuickReply('deposito')">Deposito</button>
             </div>`;
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -787,6 +809,7 @@
                 <button onclick="sendQuickReply('tabungan THR')">Tabungan THR</button>
             </div>`;
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -806,7 +829,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -826,7 +849,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -846,7 +869,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -866,7 +889,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -886,7 +909,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -906,7 +929,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -920,6 +943,7 @@
                 <button onclick="sendQuickReply('Deposito 12 Bulan')">Deposito 12 Bulan</button>
             </div>`;
           scrollToBottom();
+          saveChatHistory();
           return;
         }
 
@@ -939,7 +963,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -959,7 +983,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -979,7 +1003,7 @@
             Hubungi Halo Rama
         </a>
     </p>`;
-
+          saveChatHistory();
           return;
         }
 
@@ -1000,15 +1024,18 @@
         </a>
     </p>`;
 
+          saveChatHistory();
           return;
         }
 
         if (userMessage === "Jam Operasional") {
           chatBody.innerHTML += `<p><strong>Bot:</strong> Kami buka setiap Senin - Jumat dari pukul 08.00 hingga 16.00 WIB.</p>`;
+          saveChatHistory();
           return;
         }
 
         chatBody.innerHTML += `<p><strong>Bot:</strong> Maaf, saya belum mengerti pertanyaan Anda. Coba gunakan kata kunci seperti "Produk dan Layanan" atau "Tabungan".</p>`;
+        saveChatHistory();
       }
 
       function scrollToBottom() {
@@ -1016,6 +1043,29 @@
         setTimeout(() => {
           chatBody.scrollTop = chatBody.scrollHeight;
         }, 100);
+      }
+
+      // Fungsi untuk menyimpan history chat ke sessionStorage
+      function saveChatHistory() {
+        let chatBody = document.getElementById("chatBody").innerHTML;
+        sessionStorage.setItem("chatHistory", chatBody);
+      }
+
+      // Fungsi untuk memuat history chat saat chatbot dibuka kembali
+      function loadChatHistory() {
+        let chatBody = document.getElementById("chatBody");
+        let history = sessionStorage.getItem("chatHistory");
+
+        if (history) {
+          chatBody.innerHTML = history;
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }
+      }
+
+      // Fungsi untuk menghapus history jika user ingin mereset chat
+      function clearChatHistory() {
+        sessionStorage.removeItem("chatHistory");
+        document.getElementById("chatBody").innerHTML = "";
       }
     </script>
   </body>
