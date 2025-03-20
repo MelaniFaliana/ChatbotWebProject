@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contoh Web dengan Chatbot</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+      header {
+        background: #0534b6;
+        color: white;
+        padding: 15px;
+        font-size: 20px;
+      }
+      .content {
+        padding: 20px;
+        max-width: 800px;
+        margin: auto;
+      }
+      .chatbot-icon {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #0534b6;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .chatbot-container {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        width: 350px;
+        height: 500px;
+        background: white;
+        display: none;
+        flex-direction: column;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .chatbot-header {
+        background: #0534b6;
+        color: white;
+        padding: 15px;
+        text-align: center;
+      }
+      .chatbot-body {
+        flex: 1;
+        padding: 10px;
+        overflow-y: auto;
+        text-align: left;
+      }
+      .chatbot-options {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 10px;
+      }
+      .chatbot-options button {
+        margin: 5px 0;
+        padding: 8px 12px;
+        border: none;
+        background: #0534b6;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .chatbot-input {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+      }
+      .chatbot-input input {
+        flex: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      .chatbot-input button {
+        margin-left: 10px;
+        padding: 8px 12px;
+        background: #0534b6;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #chat-container {
+        width: 350px;
+        height: 500px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 10px;
+        background: #f9f9f9;
+      }
+
+      #chat-body {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 10px;
+      }
+
+      .red-text {
+        color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Selamat Datang di Contoh Web BPR</header>
+    <div class="content">
+      <p>Ini adalah halaman contoh untuk menampilkan chatbot.</p>
+    </div>
+
+    <div class="chatbot-icon" onclick="toggleChatbot()">💬</div>
+    <div class="chatbot-container" id="chatbot">
+      <div class="chatbot-header">
+        Chatbot BPR
+        <button
+          onclick="toggleChatbot()"
+          style="
+            float: right;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+          "
+        >
+          ✖
+        </button>
+      </div>
+      <div class="chatbot-body" id="chatBody"></div>
+      <div class="chatbot-input">
+        <input type="text" id="userInput" placeholder="Ketik pesan..." />
+        <button onclick="sendUserMessage()">Kirim</button>
+      </div>
+    </div>
+
+    <script>
+      function sendUserMessage() {
+        let userInput = document.getElementById("userInput").value.trim();
+        let chatBody = document.getElementById("chatBody");
+
+        if (userInput === "") return; // Cegah pengiriman input kosong
+
+        // Tampilkan input pengguna di chatbot
+        chatBody.innerHTML += `<p><strong class="red-text">Anda:</strong> ${userInput}</p>`;
+
+        // Bersihkan input setelah dikirim
+        document.getElementById("userInput").value = "";
+
+        // Scroll ke bawah setelah pesan dikirim
+        setTimeout(() => {
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }, 100);
+
+        // Panggil botResponse setelah user mengirim pesan
+        botResponse(userInput);
+      }
+
+      document
+        .getElementById("userInput")
+        .addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault(); // Mencegah default behavior (seperti line break)
+            sendUserMessage(); // Panggil fungsi untuk mengirim pesan
+          }
+        });
+
+      function toggleChatbot() {
+        let chatbot = document.getElementById("chatbot");
+        let chatBody = document.getElementById("chatBody");
+        chatbot.style.display =
+          chatbot.style.display === "flex" ? "none" : "flex";
+
+        if (chatbot.style.display === "flex") {
+          chatBody.innerHTML = `
+    <p><strong>Bot:</strong> Halo, kamu bisa tanya apa aja ke aku tentang BPR Rama Ganda. Silakan klik pilihan di bawah atau tuliskan kata kuncinya ya.</p>
+    <p><strong>Contohnya:</strong> Tabungan, Kredit, Deposito, dll.</p>
+`;
+
+          chatBody.innerHTML += `
+                    <div class="chatbot-options">
+                        <button onclick="sendQuickReply('Produk dan Layanan')">Produk dan Layanan</button>
+                        <button onclick="sendQuickReply('Suku Bunga')">Suku Bunga</button>
+                        <button onclick="sendQuickReply('Jam Operasional')">Jam Operasional</button>
+                    </div>`;
+        }
+      }
+
+      function sendQuickReply(message) {
+        let chatBody = document.getElementById("chatBody");
+        chatBody.innerHTML += `<p><strong style="color: red;">Anda:</strong> ${message}</p>`;
+        chatBody.scrollTop = chatBody.scrollHeight;
+        scrollToBottom();
+        botResponse(message);
+      }
+
+      function botResponse(userMessage) {
+        let chatBody = document.getElementById("chatBody");
+
+        if (userMessage === "Produk dan Layanan") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Pada BPR Rama Ganda terdapat 3 produk dan layanan dapat Kamu pilih. Berikut produk dan layanan kami:</p>`;
+          chatBody.innerHTML += `
+            <div class="chatbot-options">
+                <button onclick="sendQuickReply('Tabungan')">Tabungan</button>
+                <button onclick="sendQuickReply('Deposito')">Deposito</button>
+                <button onclick="sendQuickReply('Kredit')">Kredit</button>
+            </div>`;
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "Tabungan") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Di BPR Rama Ganda terdapat 6 jenis tabungan loh. Kamu ingin tahu informasi dari tabungan yang mana dulu nih?</p>`;
+          chatBody.innerHTML += `
+            <div class="chatbot-options">
+                <button onclick="sendQuickReply('TabunganKu')">TabunganKu</button>
+                <button onclick="sendQuickReply('Tadesga')">Tadesga</button>
+                <button onclick="sendQuickReply('GandaPlus')">GandaPlus</button>
+                <button onclick="sendQuickReply('Ganda')">Ganda</button>
+                <button onclick="sendQuickReply('Rama Qurban')">Rama Qurban</button>
+                <button onclick="sendQuickReply('Tabungan THR')">Tabungan THR</button>
+            </div>`;
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "TabunganKu") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Berikut informasi terkait tabungan jenis TabunganKu:</p>`;
+          chatBody.innerHTML += `<p><strong>Apa itu TabunganKu?</strong></p>`;
+          chatBody.innerHTML += `<p>TabunganKu adalah tabungan untuk perorangan dengan persyaratan mudah dan ringan yang diterbitkan secara bersama oleh bank-bank di Indonesia guna menumbuhkan budaya menabung serta meningkatkan kesejahteraan masyarakat.</p>`;
+          chatBody.innerHTML += `<p><strong>Fitur TabunganKu</strong></p>`;
+          chatBody.innerHTML += `<ul>
+            <li>Tanpa biaya administrasi bulanan</li>
+            <li>Setoran awal pembukaan rekening minimum Rp 10.000,00</li>
+            <li>Setoran tunai selanjutnya tidak ada pembatasan</li>
+            <li>Saldo minimum rekening (setelah penarikan) adalah Rp 10.000,00</li>
+            <li>Saldo dorman (tidak ada transaksi selama 6 bulan berturut-turut)</li>
+            <li>Biaya penalti saldo dorman adalah Rp 1.000,00 per bulan</li>
+            <li>Apabila saldo rekening mencapai kurang dari Rp 1.000,00, maka rekening akan ditutup oleh sistem dengan biaya penutupan rekening sebesar sisa saldo</li>
+            <li>Biaya penutupan rekening atas permintaan nasabah adalah Rp 5.000,00</li>
+            <li>Jumlah minimum penarikan di counter sebesar Rp 50.000,00 kecuali pada saat nasabah ingin menutup rekening</li>
+            <li>Bunga/bonus Wadiah dihitung berdasarkan saldo harian dan tidak progresif</li>
+            <li>Bunga/bonus Wadiah/bagi hasil Mudharabah dibayarkan mengikuti periode pembayaran masing-masing bank</li>
+            <li>Suku bunga 4%</li>
+            <li>Biaya penggantian buku/lembar statement apabila hilang/rusak adalah gratis</li>
+        </ul>`;
+          chatBody.innerHTML += `<p><strong>Syarat & Ketentuan TabunganKu</strong></p>`;
+          chatBody.innerHTML += `<ul>
+            <li>Tabungan perorangan untuk warga negara Indonesia</li>
+            <li>Satu orang hanya memiliki 1 rekening di 1 bank untuk produk yang sama, kecuali bagi orang tua yang membuka rekening untuk anak yang masih di bawah perwalian sesuai kartu keluarga yang bersangkutan</li>
+            <li>Tidak diperkenankan untuk rekening bersama dengan status “dan/atau”</li>
+            <li>Transaksi penarikan tunai dan pemindahbukuan melalui counter hanya dapat dilakukan di kantor bank dimana rekening dibuka</li>
+            <li>Persyaratan pembukaan rekening tetap mengacu pada peraturan Know Your Customer:
+                <ul>
+                    <li>Formulir standar masing-masing Bank dengan menyebutkan nama produk</li>
+                    <li>Identitas diri yang dibutuhkan: KTP/SIM/Paspor (untuk paspor berusia 17 tahun ke atas)</li>
+                    <li>Penabung di bawah perwalian, harus menggunakan nama orang tua</li>
+                </ul>
+            </li>
+        </ul>`;
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis TabunganKu? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+          chatBody.innerHTML += `
+        <p>
+            <a href="https://wa.me/6285962889755" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                     alt="WhatsApp" width="20" height="20" 
+                     style="vertical-align: middle; margin-right: 5px;">
+                Hubungi Halo Rama
+            </a>
+        </p>`;
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "Tadesga") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Berikut informasi terkait tabungan jenis Tadesga:</p>`;
+          chatBody.innerHTML += `<p><strong>Apa itu Tabungan Tadesga?</strong></p>`;
+          chatBody.innerHTML += `<p>Tabungan Tadesga adalah tabungan dengan setoran awal minimum Rp 25.000,00, dengan suku bunga paling tinggi.</p>`;
+          chatBody.innerHTML += `<p><strong>Ketentuan Umum Tadesga</strong></p>`;
+          chatBody.innerHTML += `<ul>
+            <li>Tabungan TADESGA terbuka untuk umum</li>
+            <li>Setoran pertama dan saldo minimum Rp 50.000,00</li>
+            <li>Setoran tunai selanjutnya minimum Rp 1.000,00</li>
+            <li>Penarikan dapat dilakukan kapan saja selama saldo mencukupi</li>
+            <li>Bunga dihitung berdasarkan saldo terendah dalam bulan berjalan</li>
+            <li>Bunga dibayar setiap tahun langsung ke rekening</li>
+            <li>Saldo kurang dari minimum tidak mendapat bunga</li>
+            <li>Penutupan rekening dikenakan biaya administrasi</li>
+        </ul>`;
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis Tadesga? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+          chatBody.innerHTML += `
+        <p>
+            <a href="https://wa.me/6285962889755" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                     alt="WhatsApp" width="20" height="20" 
+                     style="vertical-align: middle; margin-right: 5px;">
+                Hubungi Halo Rama
+            </a>
+        </p>`;
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "GandaPlus") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Berikut informasi terkait tabungan jenis Ganda Plus:</p>`;
+
+          chatBody.innerHTML += `<p><strong>Apa itu Tabungan Ganda Plus?</strong></p>
+    <p>Tabungan Ganda Plus adalah tabungan dengan setoran awal minimum Rp 25.000,00 dan akan mendapatkan hadiah tiap tahunnya berdasarkan poin yang dikumpulkan.</p>`;
+
+          chatBody.innerHTML += `<p><strong>Syarat dan Ketentuan</strong></p>
+    <p><strong>Persyaratan Umum</strong></p>
+    <ul>
+        <li>Tabungan GANDA PLUS terbuka untuk umum.</li>
+        <li>Apabila terdapat perbedaan antara saldo buku tabungan dengan saldo yang tercatat pada BPR maka yang digunakan sebagai pedoman adalah saldo yang tercatat pada BPR.</li>
+        <li>Apabila buku tabungan hilang, penabung harus segera memberitahukan kepada BPR dengan disertai Surat Kehilangan dari Pihak Kepolisian.</li>
+        <li>Nasabah menyatakan tunduk pada segala ketentuan yang berlaku di BPR Rama Ganda.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Penyetoran dan Penarikan</strong></p>
+    <ul>
+        <li>Setoran pertama dan selanjutnya minimal saldo yang ditetapkan oleh BPR Rama Ganda.</li>
+        <li>Setiap penarikan nasabah harus menunjukkan buku tabungan kepada petugas BPR Rama Ganda.</li>
+        <li>Penarikan dana dapat dilakukan pada setiap saat pada waktu jam kerja selama kas buka.</li>
+        <li>Penarikan oleh bukan nasabah yang bersangkutan harus dilengkapi dengan surat kuasa dan KTP asli dari nasabah serta KTP asli penerima kuasa.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Perhitungan Bunga Tabungan</strong></p>
+    <ul>
+        <li>Perhitungan bunga dilakukan pada akhir bulan dan dibukukan pada akhir bulan bersangkutan.</li>
+        <li>Bunga dihitung atas dasar saldo harian.</li>
+        <li>Besarnya tingkat suku bunga ditetapkan oleh BPR Rama Ganda.</li>
+        <li>Atas bunga dikenakan pajak sesuai dengan pajak yang berlaku.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Poin dan Hadiah</strong></p>
+    <ul>
+        <li>Poin dihitung berdasarkan rata-rata saldo tabungan dalam 1 (satu) bulan.</li>
+        <li>Setiap saldo rata-rata Rp 25.000,00 mendapatkan 1 (satu) poin dan berlaku kelipatannya.</li>
+        <li>Poin hanya diberikan jika saldo rata-rata per bulan minimum Rp 100.000,00.</li>
+        <li>Jika saldo rata-rata nasabah di bawah Rp 100.000,00 selama 3 bulan berturut-turut, poin akan hangus otomatis.</li>
+        <li>Poin dalam jumlah tertentu dapat ditukarkan dengan hadiah langsung.</li>
+        <li>Nilai dan jenis hadiah ditentukan oleh BPR Rama Ganda dan hanya berlaku pada periode tertentu.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Penutupan Rekening</strong></p>
+    <ul>
+        <li>Biaya penutupan rekening ditetapkan oleh BPR Rama Ganda.</li>
+        <li>Jika saldo pada akhir bulan menjadi nihil, maka BPR berhak menutup rekening secara otomatis.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis Ganda Plus? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "Ganda") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Berikut informasi terkait tabungan jenis Ganda:</p>`;
+
+          chatBody.innerHTML += `<p><strong>Apa itu Tabungan Ganda?</strong></p>
+    <p>Tabungan Ganda adalah tabungan dengan setoran awal minimum Rp 25.000,00, bunga menarik dan perhitungan bunga berdasarkan saldo harian.</p>`;
+
+          chatBody.innerHTML += `<p><strong>Syarat dan Ketentuan</strong></p>
+    <p><strong>Persyaratan Umum</strong></p>
+    <ul>
+        <li>Tabungan GANDA terbuka untuk umum.</li>
+        <li>Apabila terdapat perbedaan antara saldo buku tabungan dengan saldo yang tercatat pada BPR maka yang digunakan sebagai pedoman adalah saldo yang tercatat pada BPR.</li>
+        <li>Apabila buku tabungan hilang, penabung harus segera memberitahukan kepada BPR dengan disertai Surat Kehilangan dari Pihak Kepolisian.</li>
+        <li>Nasabah menyatakan tunduk pada segala ketentuan yang berlaku di BPR Rama Ganda.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Penyetoran dan Penarikan</strong></p>
+    <ul>
+        <li>Setoran pertama dan selanjutnya minimal saldo yang ditetapkan oleh BPR Rama Ganda.</li>
+        <li>Setiap penarikan nasabah harus menunjukkan buku tabungan kepada petugas BPR Rama Ganda.</li>
+        <li>Penarikan dana dapat dilakukan setiap saat pada jam kerja selama kas buka.</li>
+        <li>Penarikan oleh bukan nasabah yang bersangkutan harus dilengkapi dengan surat kuasa dan KTP asli dari nasabah serta KTP asli penerima kuasa.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Perhitungan Bunga Tabungan</strong></p>
+    <ul>
+        <li>Perhitungan bunga dilakukan pada akhir bulan dan dibukukan pada akhir bulan bersangkutan.</li>
+        <li>Bunga dihitung atas dasar saldo harian.</li>
+        <li>Besarnya tingkat suku bunga ditetapkan oleh BPR Rama Ganda.</li>
+        <li>Atas bunga dikenakan pajak sesuai dengan pajak yang berlaku.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Penutupan Rekening</strong></p>
+    <ul>
+        <li>Biaya penutupan rekening ditetapkan oleh BPR Rama Ganda.</li>
+        <li>Jika saldo pada akhir bulan menjadi nihil, maka BPR berhak menutup rekening secara otomatis.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis Ganda? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "Rama Qurban") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Berikut informasi terkait tabungan jenis Rama Qurban:</p>`;
+
+          chatBody.innerHTML += `<p><strong>Apa itu Tabungan Rama Qurban?</strong></p>
+    <p>Tabungan Rama “QURBAN” merupakan produk tabungan rencana untuk periode 10 bulan (10 kali setoran tabungan setiap tanggal jatuh temponya) yang bertujuan untuk rencana pembelian hewan Qurban yang diinginkan. Pembukaan tabungan ini dilakukan terbatas, dengan harapan saat jatuh tempo tabungan, penabung sudah dapat mengambil dana tabungannya menjelang waktu berqurban.</p>`;
+
+          chatBody.innerHTML += `<p><strong>Ketentuan Umum</strong></p>
+    <p><strong>Persyaratan Umum</strong></p>
+    <ul>
+        <li>Tabungan Rama Qurban diperuntukan bagi perorangan.</li>
+        <li>Apabila terdapat perbedaan saldo yang tercatat pada BPR maka yang digunakan sebagai pedoman adalah saldo yang tercatat di BPR.</li>
+        <li>Apabila buku tabungan hilang, penabung harus segera memberitahukan kepada BPR dengan disertai surat kehilangan dari Pihak Kepolisian.</li>
+        <li>Nasabah menyatakan tunduk pada segala ketentuan yang berlaku di BPR Rama Ganda.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Penyetoran dan Penarikan</strong></p>
+    <ul>
+        <li>Setoran awal minimal sebesar jumlah setoran per bulan dari rencana pembelian hewan qurban yang diinginkan.</li>
+        <li>Setiap penarikan nasabah harus menunjukkan buku tabungan kepada petugas BPR Rama Ganda.</li>
+        <li>Penarikan dana dapat dilakukan setiap saat pada jam kerja selama kas buka.</li>
+        <li>Penarikan oleh bukan nasabah yang bersangkutan harus dilengkapi dengan surat kuasa dan KTP asli dari nasabah serta KTP asli penerima kuasa.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Perhitungan Bunga Tabungan</strong></p>
+    <ul>
+        <li>Bunga tabungan Rama Qurban dihitung berdasarkan saldo setiap bulannya.</li>
+        <li>Besarnya tingkat suku bunga ditetapkan oleh BPR Rama Ganda.</li>
+        <li>Atas bunga dikenakan pajak sesuai dengan ketentuan pajak yang berlaku.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Penutupan Rekening</strong></p>
+    <ul>
+        <li>Bila tabungan dicairkan/ditarik sebelum periode berakhir maka biaya penutupan rekening dikenakan penalti sebesar 5% dari saldo tabungan.</li>
+        <li>Setiap akhir periode tabungan akan dilakukan penutupan atas seluruh rekening tabungan.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis Rama Qurban? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "Tabungan THR") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Berikut informasi terkait tabungan jenis Tabungan Ganda THR:</p>`;
+
+          chatBody.innerHTML += `<p><strong>Apa itu Tabungan Ganda THR?</strong></p>
+    <p>Tabungan Ganda THR merupakan tabungan bersifat paket dan berjangka. Satu periode paket yaitu 10 bulan, yang dimulai pada bulan Syawal dan berakhir di bulan Ramadan Tahun Hijriyah, atau berdasarkan informasi dari PT. BPR Rama Ganda. 
+    Penarikannya hanya dapat dilakukan setelah periode berakhir, dan setiap keikutsertaan akan mendapatkan saldo paket tabungan serta bingkisan THR (pengganti bunga tabungan) sesuai paket yang diikuti.</p>`;
+
+          chatBody.innerHTML += `<p><strong>Ketentuan Umum</strong></p>
+    <p><strong>Persyaratan Umum</strong></p>
+    <ul>
+        <li>Tabungan Ganda THR diperuntukkan bagi perorangan.</li>
+        <li>Apabila terdapat perbedaan saldo buku tabungan dengan saldo yang tercatat di BPR, maka saldo yang digunakan sebagai pedoman adalah saldo yang tercatat di BPR.</li>
+        <li>Jika buku tabungan hilang, penabung harus segera melaporkan kepada BPR dengan melampirkan surat kehilangan dari Pihak Kepolisian.</li>
+        <li>Nasabah menyatakan tunduk pada segala ketentuan yang berlaku di BPR Rama Ganda.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Penyetoran dan Penarikan</strong></p>
+    <ul>
+        <li>Setoran awal minimal sebesar jumlah setoran per bulan dari paket yang diambil.</li>
+        <li>Setiap penarikan nasabah harus menunjukkan buku tabungan kepada petugas BPR Rama Ganda.</li>
+        <li>Penarikan dana dapat dilakukan setiap saat selama jam kerja dan kas buka.</li>
+        <li>Penarikan oleh pihak selain nasabah harus dilengkapi dengan surat kuasa serta KTP asli dari nasabah dan penerima kuasa.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Perhitungan Bunga Tabungan</strong></p>
+    <ul>
+        <li>Bunga tabungan Ganda THR dihitung berdasarkan saldo setiap bulannya dan akan dikonversi menjadi bingkisan lebaran berupa kebutuhan rumah tangga.</li>
+        <li>Besarnya tingkat suku bunga ditetapkan oleh BPR Rama Ganda.</li>
+        <li>Pajak dikenakan sesuai dengan ketentuan pajak yang berlaku.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Penutupan Rekening</strong></p>
+    <ul>
+        <li>Jika tabungan dicairkan sebelum periode berakhir, akan dikenakan penalti sebesar 5% dari saldo tabungan.</li>
+        <li>Setiap akhir periode tabungan, seluruh rekening tabungan akan ditutup.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis Tabungan Ganda THR? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+          return;
+        }
+
+        if (userMessage === "Deposito") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Berikut informasi terkait produk deposito yang ada di BPR Rama Ganda:</p>`;
+
+          chatBody.innerHTML += `<p><strong>Apa itu Deposito?</strong></p>
+    <p>Deposito adalah simpanan yang penarikannya hanya dapat dilakukan pada waktu tertentu berdasarkan perjanjian nasabah penyimpan dengan bank.</p>`;
+
+          chatBody.innerHTML += `<p><strong>Keunggulan</strong></p>
+    <ul>
+        <li>Bunga deposito tinggi.</li>
+        <li>Bebas memperpanjang deposito secara otomatis (Automatic Roll Over / ARO).</li>
+        <li>Bunga dapat ditempatkan ke rekening tabungan BPR atau ditransfer ke rekening bank lain.</li>
+        <li>Deposito dapat digunakan sebagai agunan untuk mendapatkan fasilitas kredit.</li>
+        <li>Aman dan dijamin oleh LPS.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Skema</strong></p>
+    <ul>
+        <li>Jangka waktu simpanan: 1, 3, 6, dan 12 Bulan.</li>
+        <li>Bunga dikenakan pajak sesuai ketentuan yang berlaku.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Persyaratan</strong></p>
+    <ul>
+        <li>Membawa bukti identitas diri yang masih berlaku.</li>
+        <li>Mengisi dan menandatangani formulir aplikasi deposito.</li>
+        <li>Mengisi dan menandatangani formulir pembukaan rekening tabungan apabila bunga ditransfer ke salah satu produk tabungan BPR.</li>
+        <li>Minimal pembukaan rekening deposito sebesar Rp 5.000.000.</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai Deposito? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/deposito" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+          return;
+        }
+
+        if (userMessage === "Kredit") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Di BPR Rama Ganda terdapat 3 jenis kredit loh. Kamu ingin tahu informasi dari kredit yang mana dulu nih?</p>`;
+          chatBody.innerHTML += `
+            <div class="chatbot-options">
+                <button onclick="sendQuickReply('Kredit Modal Kerja')">Kredit Modal Kerja</button>
+                <button onclick="sendQuickReply('Kredit Konsumtif')">Kredit Konsumtif</button>
+                <button onclick="sendQuickReply('Kredit Kelompok')">Kredit Kelompok</button>
+            </div>`;
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "Kredit Modal Kerja") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Berikut informasi terkait Kredit Modal Kerja:</p>`;
+
+          chatBody.innerHTML += `<p><strong>Apa itu Kredit Modal Kerja?</strong></p>
+    <p>Kredit modal kerja adalah kredit yang diperuntukkan untuk nasabah yang ingin membuat usaha atau ingin mengembangkan usaha yang sudah ada.</p>`;
+
+          chatBody.innerHTML += `<p><strong>Syarat dan Ketentuan</strong></p>`;
+
+          chatBody.innerHTML += `<p><strong>Persyaratan dengan jaminan sertifikat rumah</strong></p>
+    <ul>
+        <li>Sertifikat asli</li>
+        <li>Fotokopi KTP suami - istri</li>
+        <li>Fotokopi Kartu Keluarga</li>
+        <li>SPPT tahun terakhir + tanda bukti lunas PBB</li>
+        <li>Surat Keterangan Usaha (bagi yang punya usaha)</li>
+        <li>Slip gaji 3 bulan terakhir</li>
+        <li>Rekening listrik</li>
+        <li>Fotokopi NPWP</li>
+        <li>Fotokopi surat nikah</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Persyaratan dengan jaminan BPKB Kendaraan</strong></p>
+    <ul>
+        <li>BPKB asli + faktur</li>
+        <li>Fotokopi KTP suami - istri</li>
+        <li>Fotokopi Kartu Keluarga</li>
+        <li>Surat Keterangan Usaha (bagi yang punya usaha)</li>
+        <li>Slip gaji 3 bulan terakhir</li>
+        <li>Kwitansi pembelian</li>
+        <li>Fotokopi KTP pemilik pertama untuk kendaraan yang belum balik nama</li>
+        <li>SK trayek & KIR khusus untuk angkutan umum</li>
+        <li>Rekening listrik</li>
+        <li>Fotokopi NPWP</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Catatan yang bisa dijadikan jaminan:</strong></p>
+    <ul>
+        <li>Motor: Honda, Yamaha, Suzuki, Kawasaki (motor di atas tahun 2010)</li>
+        <li>Mobil: Daihatsu, Toyota, Mitsubishi, Nissan, Honda, Suzuki</li>
+        <li>No Polisi: F Bogor</li>
+        <li>Kondisi baik, STNK hidup dan atas nama sendiri</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai Kredit Modal Kerja? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/kredit" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+          return;
+        }
+
+        if (userMessage === "Kredit Konsumtif") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Berikut informasi terkait Kredit Konsumtif:</p>`;
+
+          chatBody.innerHTML += `<p><strong>Apa itu Kredit Konsumtif?</strong></p>
+    <p>Kredit konsumtif adalah kredit yang diperuntukkan bagi nasabah yang memiliki keperluan mendesak atau sedang membutuhkan barang-barang tertentu untuk menunjang aktivitas sehari-hari. Nasabah hanya perlu memberikan jaminan berupa sertifikat rumah atau BPKB kendaraan bermotor. Prosesnya cepat, angsuran pun ringan.</p>`;
+
+          chatBody.innerHTML += `<p><strong>Syarat dan Ketentuan</strong></p>`;
+
+          chatBody.innerHTML += `<p><strong>Persyaratan dengan jaminan sertifikat rumah</strong></p>
+    <ul>
+        <li>Sertifikat asli</li>
+        <li>Fotokopi KTP suami - istri</li>
+        <li>Fotokopi Kartu Keluarga</li>
+        <li>SPPT tahun terakhir + tanda bukti lunas PBB</li>
+        <li>Surat Keterangan Usaha (bagi yang punya usaha)</li>
+        <li>Slip gaji 3 bulan terakhir</li>
+        <li>Rekening listrik</li>
+        <li>Fotokopi NPWP</li>
+        <li>Fotokopi surat nikah</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Persyaratan dengan jaminan BPKB Kendaraan</strong></p>
+    <ul>
+        <li>BPKB asli + faktur</li>
+        <li>Fotokopi KTP suami - istri</li>
+        <li>Fotokopi Kartu Keluarga</li>
+        <li>Surat Keterangan Usaha (bagi yang punya usaha)</li>
+        <li>Slip gaji 3 bulan terakhir</li>
+        <li>Kwitansi pembelian</li>
+        <li>Fotokopi KTP pemilik pertama untuk kendaraan yang belum balik nama</li>
+        <li>SK trayek & KIR khusus untuk angkutan umum</li>
+        <li>Rekening listrik</li>
+        <li>Fotokopi NPWP</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Catatan yang bisa dijadikan jaminan:</strong></p>
+    <ul>
+        <li>Motor: Honda, Yamaha, Suzuki, Kawasaki (motor di atas tahun 2010)</li>
+        <li>Mobil: Daihatsu, Toyota, Mitsubishi, Nissan, Honda, Suzuki</li>
+        <li>No Polisi: F Bogor</li>
+        <li>Kondisi baik, STNK hidup dan atas nama sendiri</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai Kredit Konsumtif? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/kredit" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "Kredit Kelompok") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Berikut informasi terkait Kredit Kelompok:</p>`;
+
+          chatBody.innerHTML += `<p><strong>Apa itu Kredit Kelompok?</strong></p>
+    <p>Kredit kelompok adalah kredit yang diperuntukkan bagi nasabah yang ingin menambah modal usaha atau untuk keperluan lainnya.</p>`;
+
+          chatBody.innerHTML += `<p><strong>Syarat dan Ketentuan</strong></p>`;
+
+          chatBody.innerHTML += `<ul>
+        <li>Fotokopi KTP suami - istri</li>
+        <li>Fotokopi Kartu Keluarga</li>
+        <li>Fotokopi Surat Nikah</li>
+        <li>SPPT terakhir + tanda bukti lunas PBB</li>
+        <li>Rekening listrik</li>
+        <li>Fotokopi NPWP</li>
+        <li>Surat Keterangan Usaha (bagi yang punya usaha)</li>
+        <li>Slip gaji 3 bulan terakhir</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p><strong>Tujuan Penggunaan Pinjaman:</strong></p>
+    <ul>
+        <li>Penambahan Modal Usaha</li>
+        <li>Biaya Pendidikan</li>
+        <li>Keperluan Lainnya</li>
+    </ul>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai Kredit Kelompok? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/kredit" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "Suku Bunga") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga kami bervariasi tergantung pada jenis produk yang Kamu pilih. Berikut produk dan layanan kami:</p>`;
+          chatBody.innerHTML += `
+            <div class="chatbot-options">
+                <button onclick="sendQuickReply('tabungan')">Tabungan</button>
+                <button onclick="sendQuickReply('deposito')">Deposito</button>
+            </div>`;
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "tabungan") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Pada BPR Rama Ganda terdapat bermacam-macam jenis tabungan loh, Kamu ingin tahu suku bunga untuk tabungan jenis yang mana? Berikut jenis tabungan yang ada di BPR Rama Ganda:</p>`;
+          chatBody.innerHTML += `
+            <div class="chatbot-options">
+                <button onclick="sendQuickReply('Tabunganku')">TabunganKu</button>
+                <button onclick="sendQuickReply('tadesga')">Tadesga</button>
+                <button onclick="sendQuickReply('gandaplus')">GandaPlus</button>
+                <button onclick="sendQuickReply('ganda')">Ganda</button>
+                <button onclick="sendQuickReply('rama qurban')">Rama Qurban</button>
+                <button onclick="sendQuickReply('tabungan THR')">Tabungan THR</button>
+            </div>`;
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "Tabunganku") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga untuk tabungan jenis TabunganKu adalah sebesar 2%.</p>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis TabunganKu? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "tadesga") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga untuk tabungan jenis Tadesga adalah sebesar 2%.</p>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis Tadesga? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "gandaplus") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga untuk tabungan jenis GandaPlus adalah sebesar 2.5%.</p>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis GandaPlus? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "ganda") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga untuk tabungan jenis Ganda adalah sebesar 3%.</p>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis Ganda? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "rama qurban") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga untuk tabungan jenis Rama Qurban adalah sebesar 5%.</p>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis Rama Qurban? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "tabungan THR") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga untuk tabungan jenis Tabungan THR adalah sebesar 3%, dan nantinya akan dikonversi menjadi bingkisan lebaran berupa kebutuhan rumah tangga.</p>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai tabungan jenis Tabungan THR? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/tabungan" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "deposito") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Pada BPR Rama Ganda terdapat produk deposito dengan tenor (jangka waktu) yang bisa Kamu pilih:</p>`;
+          chatBody.innerHTML += `
+            <div class="chatbot-options">
+                <button onclick="sendQuickReply('Deposito 1 Bulan')">Deposito 1 Bulan</button>
+                <button onclick="sendQuickReply('Deposito 3 Bulan')">Deposito 3 Bulan</button>
+                <button onclick="sendQuickReply('Deposito 6 Bulan')">Deposito 6 Bulan</button>
+                <button onclick="sendQuickReply('Deposito 12 Bulan')">Deposito 12 Bulan</button>
+            </div>`;
+          scrollToBottom();
+          return;
+        }
+
+        if (userMessage === "Deposito 1 Bulan") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga untuk deposito 1 Bulan adalah sebesar 3.5% dari nominal yang didepositokan.</p>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai jenis Deposito 1 Bulan? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/deposito" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "Deposito 3 Bulan") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga untuk deposito 3 Bulan adalah sebesar 4% dari nominal yang didepositokan.</p>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai jenis Deposito 3 Bulan? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/deposito" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "Deposito 6 Bulan") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga untuk deposito 6 Bulan adalah sebesar 5% dari nominal yang didepositokan.</p>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai jenis Deposito 6 Bulan? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/deposito" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "Deposito 12 Bulan") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Suku bunga untuk deposito 12 Bulan adalah sebesar 5.75% dari nominal yang didepositokan.</p>`;
+
+          chatBody.innerHTML += `<p>Kamu ingin tahu informasi lengkapnya mengenai jenis Deposito 12 Bulan? Yuk baca informasi lengkapnya melalui link berikut atau hubungi Halo Rama sekarang juga dengan klik logo WA di bawah ini 👇</p>`;
+
+          chatBody.innerHTML += `<p><a href="https://bprramaganda.com/produk-layanan/deposito" target="_blank">Baca selengkapnya</a></p>`;
+
+          chatBody.innerHTML += `
+    <p>
+        <a href="https://wa.me/6285962889755" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" 
+                 alt="WhatsApp" width="20" height="20" 
+                 style="vertical-align: middle; margin-right: 5px;">
+            Hubungi Halo Rama
+        </a>
+    </p>`;
+
+          return;
+        }
+
+        if (userMessage === "Jam Operasional") {
+          chatBody.innerHTML += `<p><strong>Bot:</strong> Kami buka setiap Senin - Jumat dari pukul 08.00 hingga 16.00 WIB.</p>`;
+          return;
+        }
+
+        chatBody.innerHTML += `<p><strong>Bot:</strong> Maaf, saya belum mengerti pertanyaan Anda. Coba gunakan kata kunci seperti "Produk dan Layanan" atau "Tabungan".</p>`;
+      }
+
+      function scrollToBottom() {
+        let chatBody = document.getElementById("chatBody");
+        setTimeout(() => {
+          chatBody.scrollTop = chatBody.scrollHeight;
+        }, 100);
+      }
+    </script>
+  </body>
+</html>
