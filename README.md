@@ -1,11 +1,11 @@
-# ChatbotWebProject
+# ChatbotWeb
 
 **Deskripsi**
 
-Chatbot Web Projet adalah salah satu project yang mengembangkan chatbot untuk halaman Website PT BPR Rama Ganda.
-Chatbot ini masih dalam fase pengembangan oleh developer.
+Chatbot Web adalah salah satu chatbot yang dapat digunakan oleh nasabah pada halaman Website PT BPR Rama Ganda.
+Chatbot ini dikembangkan dengan menggunakan bahasa markup HTML, CSS, dan bahasa pemrograman Javascript, serta dengan menggunakan Code Editor Visual Studio Code.
 
-Berikut ini adalah tampilan sementara untuk hasil chatbot-nya:
+Berikut ini adalah tampilan untuk hasil chatbot-nya:
 
 ![image](https://github.com/user-attachments/assets/a671c652-54d5-46ee-b67e-d0e8acc31fbd)
 
