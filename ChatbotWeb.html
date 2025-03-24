@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contoh Web dengan Chatbot</title>
+    <title>Chatbot Web</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -154,23 +154,18 @@
         let userInput = document.getElementById("userInput").value.trim();
         let chatBody = document.getElementById("chatBody");
 
-        if (userInput === "") return; // Cegah pengiriman input kosong
+        if (userInput === "") return;
 
-        // Tampilkan input pengguna di chatbot
         chatBody.innerHTML += `<p><strong class="red-text">Anda:</strong> ${userInput}</p>`;
 
-        // Bersihkan input setelah dikirim
         document.getElementById("userInput").value = "";
 
-        // Scroll ke bawah setelah pesan dikirim
         setTimeout(() => {
           chatBody.scrollTop = chatBody.scrollHeight;
         }, 100);
 
-        // Simpan history chat setelah pesan user ditambahkan
         saveChatHistory();
 
-        // Panggil botResponse setelah user mengirim pesan
         botResponse(userInput);
       }
 
@@ -178,8 +173,8 @@
         .getElementById("userInput")
         .addEventListener("keydown", function (event) {
           if (event.key === "Enter") {
-            event.preventDefault(); // Mencegah default behavior (seperti line break)
-            sendUserMessage(); // Panggil fungsi untuk mengirim pesan
+            event.preventDefault();
+            sendUserMessage();
           }
         });
 
@@ -190,7 +185,7 @@
           chatbot.style.display === "flex" ? "none" : "flex";
 
         if (chatbot.style.display === "flex") {
-          loadChatHistory(); // Tampilkan kembali history chat
+          loadChatHistory();
 
           if (!sessionStorage.getItem("chatHistory")) {
             chatBody.innerHTML = `
@@ -212,7 +207,6 @@
         let chatBody = document.getElementById("chatBody");
         chatBody.innerHTML += `<p><strong style="color: red;">Anda:</strong> ${message}</p>`;
 
-        // Simpan history chat setelah pesan user ditambahkan
         saveChatHistory();
 
         chatBody.scrollTop = chatBody.scrollHeight;
@@ -1045,13 +1039,11 @@
         }, 100);
       }
 
-      // Fungsi untuk menyimpan history chat ke sessionStorage
       function saveChatHistory() {
         let chatBody = document.getElementById("chatBody").innerHTML;
         sessionStorage.setItem("chatHistory", chatBody);
       }
 
-      // Fungsi untuk memuat history chat saat chatbot dibuka kembali
       function loadChatHistory() {
         let chatBody = document.getElementById("chatBody");
         let history = sessionStorage.getItem("chatHistory");
@@ -1062,7 +1054,6 @@
         }
       }
 
-      // Fungsi untuk menghapus history jika user ingin mereset chat
       function clearChatHistory() {
         sessionStorage.removeItem("chatHistory");
         document.getElementById("chatBody").innerHTML = "";
